@@ -1,0 +1,4 @@
+.envrc
+akv-entrypoint
+*.log
+dist/
