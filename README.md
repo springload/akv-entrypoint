@@ -18,8 +18,8 @@ It works the following way:
 ### CLI usage for testing
 
 ```bash
-  $akv-entrypoint -d print -n your-keyvault # to see env vars printed in JSON
-  $akv-entrypoint -d run -n your-keyvault -- your-app # to run the app
+$akv-entrypoint -d print -n your-keyvault # to see env vars printed in JSON
+$akv-entrypoint -d run -n your-keyvault -- your-app # to run the app
 ```
 
 ### Docker entrypoint
