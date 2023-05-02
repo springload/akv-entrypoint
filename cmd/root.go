@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -36,8 +37,6 @@ func init() {
 	rootCmd.PersistentFlags().StringP("vault-name", "n", "", "KeyVault name")
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Turn on debug logging")
 
-	rootCmd.MarkPersistentFlagRequired("vault-name")
-
 	viper.BindPFlag("debug", rootCmd.PersistentFlags().Lookup("debug"))
 	viper.BindPFlag("vault-name", rootCmd.PersistentFlags().Lookup("vault-name"))
 }
@@ -54,8 +53,15 @@ func initConfig() {
 		}
 	}
 
+	viper.SetEnvPrefix("AKV_ENTRYPOINT")
 	viper.AutomaticEnv() // read in environment variables that match
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+
 	if viper.GetBool("debug") {
 		log.SetLevel(log.DebugLevel)
+	}
+	if viper.GetString("vault-name") == "" {
+		fmt.Println("Please set the vault name")
+		os.Exit(1)
 	}
 }
