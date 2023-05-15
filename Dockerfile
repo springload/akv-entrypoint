@@ -12,7 +12,7 @@ ADD ./ ./
 ENV CGO_ENABLED=0
 RUN go build
 
-FROM alpine as runtime
+FROM gcr.io/distroless/static-debian11:nonroot as runtime
 
 COPY --from=build /app/akv-entrypoint /usr/bin
 

@@ -50,7 +50,7 @@ func GetSecrets(keyVaultName string) (map[string]string, error) {
 			if contentType := v.ContentType; contentType != nil && *contentType == "application/json" {
 				log.Debugf("JSON Secret Name: %s\tSecret Tags: %v", *v.ID, v.Tags)
 				if err := json.Unmarshal([]byte(*secret.Value), &keyValue); err != nil {
-					return nil, fmt.Errorf("Can't unmarshal json from '%s': %s", *secret.Value, err)
+					return nil, fmt.Errorf("Can't unmarshal json: %s", err)
 				}
 			} else {
 				log.Debugf("PLAIN Secret Name: %s\tSecret Tags: %v", *v.ID, v.Tags)
