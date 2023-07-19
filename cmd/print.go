@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/apex/log"
 	"github.com/spf13/cobra"
@@ -17,8 +18,16 @@ var printCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		vaultName := viper.GetString("vault-name")
-		log.Debugf("getting secrets for %s", vaultName)
-		secrets, err := lib.GetSecrets(vaultName)
+		var secretNames []string
+		if err := viper.UnmarshalKey("secret-names", &secretNames); err != nil {
+			log.WithError(err).Fatal("can't unmarshal secret names")
+		}
+		if len(secretNames) > 0 {
+			log.Debugf("getting secrets \"%s\" for %s", strings.Join(secretNames, ", "), vaultName)
+		} else {
+			log.Debugf("getting all secrets for %s", vaultName)
+		}
+		secrets, err := lib.GetSecrets(vaultName, secretNames...)
 		if err != nil {
 			log.WithError(err).Fatal("can't get secrets")
 		}

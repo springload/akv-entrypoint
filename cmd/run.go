@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 
 	"github.com/apex/log"
@@ -18,8 +19,16 @@ var runCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		vaultName := viper.GetString("vault-name")
-		log.Debugf("getting secrets for %s", vaultName)
-		secrets, err := lib.GetSecrets(vaultName)
+		var secretNames []string
+		if err := viper.UnmarshalKey("secret-names", &secretNames); err != nil {
+			log.WithError(err).Fatal("can't unmarshal secret names")
+		}
+		if len(secretNames) > 0 {
+			log.Debugf("getting secrets \"%s\" for %s", strings.Join(secretNames, ", "), vaultName)
+		} else {
+			log.Debugf("getting all secrets for %s", vaultName)
+		}
+		secrets, err := lib.GetSecrets(vaultName, secretNames...)
 		if err != nil {
 			log.WithError(err).Fatal("can't get secrets")
 		}

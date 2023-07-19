@@ -35,10 +35,12 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&config, "config", "c", "", "TODO: Path to the config file (optional). Allows to set transformations")
 	rootCmd.PersistentFlags().StringP("vault-name", "n", "", "KeyVault name")
+	rootCmd.PersistentFlags().StringSliceP("secret-name", "s", []string{}, "Secret names to pull. If a name starts with json:, i.e. json:secret1, they are treated as JSON objects. If not set akv-entrypoint will List all secrets and read them all. Can be specified multiple times. If set via env var AKV_ENTRYPOINT_SECRET_NAMES, multiple values should be separated by a comma.")
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Turn on debug logging")
 
 	viper.BindPFlag("debug", rootCmd.PersistentFlags().Lookup("debug"))
 	viper.BindPFlag("vault-name", rootCmd.PersistentFlags().Lookup("vault-name"))
+	viper.BindPFlag("secret-names", rootCmd.PersistentFlags().Lookup("secret-name"))
 }
 
 // initConfig reads in config file and ENV variables if set.
