@@ -18,23 +18,24 @@ var runCmd = &cobra.Command{
 	Short: "Runs the specified program with the env vars fetched from the keyvault",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultName := viper.GetString("vault-name")
-		var secretNames []string
-		if err := viper.UnmarshalKey("secret-names", &secretNames); err != nil {
-			log.WithError(err).Fatal("can't unmarshal secret names")
-		}
-		if len(secretNames) > 0 {
-			log.Debugf("getting secrets \"%s\" for %s", strings.Join(secretNames, ", "), vaultName)
-		} else {
-			log.Debugf("getting all secrets for %s", vaultName)
-		}
-		secrets, err := lib.GetSecrets(vaultName, secretNames...)
-		if err != nil {
-			log.WithError(err).Fatal("can't get secrets")
-		}
+		if vaultName := viper.GetString("vault-name"); vaultName != "" {
+			var secretNames []string
+			if err := viper.UnmarshalKey("secret-names", &secretNames); err != nil {
+				log.WithError(err).Fatal("can't unmarshal secret names")
+			}
+			if len(secretNames) > 0 {
+				log.Debugf("getting secrets \"%s\" for %s", strings.Join(secretNames, ", "), vaultName)
+			} else {
+				log.Debugf("getting all secrets for %s", vaultName)
+			}
+			secrets, err := lib.GetSecrets(vaultName, secretNames...)
+			if err != nil {
+				log.WithError(err).Fatal("can't get secrets")
+			}
 
-		for key, value := range secrets {
-			os.Setenv(key, value)
+			for key, value := range secrets {
+				os.Setenv(key, value)
+			}
 		}
 
 		// sanity check

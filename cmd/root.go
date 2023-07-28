@@ -62,8 +62,4 @@ func initConfig() {
 	if viper.GetBool("debug") {
 		log.SetLevel(log.DebugLevel)
 	}
-	if viper.GetString("vault-name") == "" {
-		fmt.Println("Please set the vault name")
-		os.Exit(1)
-	}
 }
