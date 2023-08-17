@@ -34,7 +34,10 @@ var runCmd = &cobra.Command{
 			}
 
 			for key, value := range secrets {
-				os.Setenv(key, value)
+				// replace dashes with underscores for all env var names
+				// that's because keyvault secret names can't have underscores in them
+				// and at the same time env vars can't have dashes in them
+				os.Setenv(strings.Replace(key, "-", "_", -1), value)
 			}
 		}
 
